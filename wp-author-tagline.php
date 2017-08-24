@@ -12,6 +12,7 @@
  * Text Domain:       wp-author-tagline
  */
 
+register_activation_hook( __FILE__, 'wpat_install' );
 function wpat_install() {
 	global $wpdb;
 
@@ -29,4 +30,19 @@ function wpat_install() {
 	dbDelta( $sql );
 }
 
-register_activation_hook( __FILE__, 'wpat_install' );
+add_action( 'show_user_profile', 'wpat_add_user_field' );
+add_action( 'edit_user_profile', 'wpat_add_user_field' );
+
+function wpat_add_user_field() {
+?>
+  <h3>Tagline</h3>
+  <table class="form-table">
+    <tr>
+      <th><label for="tagline">User Tagline</label></th>
+      <td>
+        <input type="text" name="wpat_tagline" id="wpat_tagline" class="regular-text" value="Sample Tagline" />
+    </td>
+    </tr>
+  </table>
+<?php
+}

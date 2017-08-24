@@ -106,3 +106,16 @@ function wpat_get_tagline( $user_id ) {
 		return '';
 	}
 }
+
+add_action( 'admin_menu', 'wpat_add_menu' );
+
+function wpat_add_menu(){
+	add_management_page( 'Taglines', 'Taglines', 'manage_options', 'wpat_tagline', 'wpat_taglines_admin_view' );
+}
+
+function wpat_taglines_admin_view(){
+?>
+	<div class="wrap">
+		<h1 class="wp-heading-inline">Taglines</h1>
+	</div>
+<?php }

@@ -137,3 +137,12 @@ function wpat_taglines_admin_view(){
 		</table>
 	</div>
 <?php }
+
+add_shortcode( 'tagline', 'wpat_do_shortcode' );
+function wpat_do_shortcode( $atts, $content = null ) {
+	global $post;
+
+	$user_id = $post->post_author;
+
+	return wpat_get_tagline( $user_id );
+}

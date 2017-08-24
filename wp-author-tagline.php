@@ -114,8 +114,26 @@ function wpat_add_menu(){
 }
 
 function wpat_taglines_admin_view(){
+	global $wpdb;
+
+	$table_name = $wpdb->prefix . 'taglines';
+
+	$results = $wpdb->get_results("SELECT * FROM $table_name");
 ?>
 	<div class="wrap">
 		<h1 class="wp-heading-inline">Taglines</h1>
+
+		<table cellpadding="10">
+			<tr>
+				<th>Author</th>
+				<th>Tagline</th>
+			</tr>
+			<?php foreach( $results as $result_row ) : ?>
+				<tr>
+					<td><?php echo get_userdata( $result_row->author )->display_name; ?></td>
+					<td><?php echo $result_row->tagline; ?></td>
+				</tr>
+			<?php endforeach; ?>
+		</table>
 	</div>
 <?php }

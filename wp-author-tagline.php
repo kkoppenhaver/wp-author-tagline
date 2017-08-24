@@ -40,9 +40,53 @@ function wpat_add_user_field() {
     <tr>
       <th><label for="tagline">User Tagline</label></th>
       <td>
-        <input type="text" name="wpat_tagline" id="wpat_tagline" class="regular-text" value="Sample Tagline" />
+        <input type="text" name="wpat_tagline" id="wpat_tagline" class="regular-text" value="" />
     </td>
     </tr>
   </table>
 <?php
+}
+
+add_action( 'personal_options_update', 'wpat_save_tagline' );
+add_action( 'edit_user_profile_update', 'wpat_save_tagline' );
+function wpat_save_tagline( $user_id ) {
+  $saved = false;
+  if ( current_user_can( 'edit_user', $user_id ) ) {
+  	global $wpdb;
+  	$table_name = $wpdb->prefix . 'taglines';
+
+  	$tagline = sanitize_text_field( $_POST['wpat_tagline'] );
+
+  	$row = $wpdb->get_results("SELECT * FROM $table_name WHERE author = '". $user_id . "'");
+
+  	if( count( $row ) > 0 ) {
+  		$wpdb->update( 
+			$table_name, 
+			array( 
+				'author' => $user_id,
+				'tagline' => $tagline
+			), 
+			array( 'author' => intval($user_id) ), 
+			array( 
+				'%d',
+				'%s',
+			), 
+			array( '%d' ) 
+		);
+  	}
+  	else {
+  		$wpdb->insert( 
+			$table_name, 
+			array( 
+		    	'author' => intval( $user_id ),
+				'tagline' => $tagline, 
+			), 
+			array( 
+		        '%d',
+				'%s', 
+			) 
+		);
+  	}
+  }
+  return true;
 }

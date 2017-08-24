@@ -34,13 +34,14 @@ add_action( 'show_user_profile', 'wpat_add_user_field' );
 add_action( 'edit_user_profile', 'wpat_add_user_field' );
 
 function wpat_add_user_field() {
+	global $user_id;
 ?>
   <h3>Tagline</h3>
   <table class="form-table">
     <tr>
       <th><label for="tagline">User Tagline</label></th>
       <td>
-        <input type="text" name="wpat_tagline" id="wpat_tagline" class="regular-text" value="" />
+        <input type="text" name="wpat_tagline" id="wpat_tagline" class="regular-text" value="<?php echo esc_attr( wpat_get_tagline( $user_id ) ); ?>" />
     </td>
     </tr>
   </table>
@@ -89,4 +90,19 @@ function wpat_save_tagline( $user_id ) {
   	}
   }
   return true;
+}
+
+function wpat_get_tagline( $user_id ) {
+	global $wpdb;
+
+	$table_name = $wpdb->prefix . 'taglines';
+
+	$result = $wpdb->get_results("SELECT * FROM $table_name WHERE author = $user_id");
+
+	if( count( $result ) > 0 ) {
+		return $result[0]->tagline;
+	}
+	else {
+		return '';
+	}
 }
